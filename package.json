@@ -1,0 +1,36 @@
+{
+  "name": "x-reply-sorter",
+  "displayName": "X Reply Sorter",
+  "version": "0.1.0",
+  "description": "Take back your replies. No more rage bait pushed by the algorithm — sort X/Twitter replies by Likes, Recent, or Relevant and see what people actually agree with first.",
+  "author": "Zac Cooper",
+  "homepage": "https://github.com/zacooper5g/x-reply-sorter",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package"
+  },
+  "dependencies": {
+    "@plasmohq/storage": "^1.11.0",
+    "plasmo": "^0.89.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.0",
+    "prettier": "^3.3.0"
+  },
+  "manifest": {
+    "permissions": [
+      "storage",
+      "activeTab"
+    ],
+    "host_permissions": [
+      "https://x.com/*",
+      "https://twitter.com/*"
+    ]
+  }
+}
