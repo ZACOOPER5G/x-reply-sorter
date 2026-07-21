@@ -4,21 +4,36 @@ import { getSettings } from '~utils/storage'
 
 export const config: PlasmoCSConfig = {
   matches: ['https://x.com/*', 'https://twitter.com/*'],
-  run_at: 'document_idle'
+  run_at: 'document_start'
 }
 
-let isProcessing = false
+const SORT_LABELS = ['relevant', 'likes', 'recent']
 
 /**
- * Find and click X's native reply sort dropdown, then select the
- * menu item matching the user's chosen sort criteria.
- *
- * X's sort button is a <button aria-haspopup="menu"> containing a <span>
- * with the current sort label (e.g. "Relevant", "Likes", "Recent").
- * Clicking it opens a dropdown with div[role="menuitem"] options.
+ * STRATEGY 1: Query param injection on initial page load.
+ * Fastest — param is set before X even fetches replies.
+ * Returns true if it triggered a redirect (caller should stop).
+ */
+const applySortParam = async (): Promise<boolean> => {
+  const url = new URL(window.location.href)
+
+  if (!isTweetPage(url)) return false
+  if (url.searchParams.has('sort_replies')) return false
+
+  const settings = await getSettings()
+
+  if (!settings.enabled || settings.sortBy === 'relevance') return false
+
+  url.searchParams.set('sort_replies', settings.sortBy)
+  window.location.replace(url.toString())
+  return true
+}
+
+/**
+ * STRATEGY 2: DOM click fallback for SPA navigation.
+ * No reload — finds and clicks X's native sort dropdown.
  */
 const clickSortOption = async (sortBy: string): Promise<boolean> => {
-  // Map our setting names to X's menu item labels
   const labelMap: Record<string, string> = {
     likes: 'Likes',
     recent: 'Recent',
@@ -28,68 +43,45 @@ const clickSortOption = async (sortBy: string): Promise<boolean> => {
   const targetLabel = labelMap[sortBy]
   if (!targetLabel) return false
 
-  // Known sort labels X uses on the button (current sort shown as button text)
-  const sortLabels = ['relevant', 'likes', 'recent']
+  const isSortButton = (el: HTMLElement): boolean => {
+    const span = el.querySelector('span')
+    if (!span) return false
+    return SORT_LABELS.includes(span.textContent?.trim().toLowerCase() || '')
+  }
 
-  // Find the sort dropdown trigger button.
-  // It's a <button aria-haspopup="menu"> with a <span> child whose text
-  // matches one of the known sort labels.
-  const sortButtons = document.querySelectorAll<HTMLElement>(
-    'button[aria-haspopup="menu"]'
+  // Wait for the sort button to appear (replies load lazily)
+  let sortButton = await waitForElement(
+    'button[aria-haspopup="menu"]',
+    8000,
+    isSortButton
   )
 
-  let sortButton: HTMLElement | null = null
-
-  for (const btn of sortButtons) {
-    const span = btn.querySelector('span')
-    if (!span) continue
-
-    const spanText = span.textContent?.trim().toLowerCase() || ''
-
-    if (sortLabels.includes(spanText)) {
-      sortButton = btn
-      break
-    }
-  }
-
-  // Fallback: div[role="button"] variant
   if (!sortButton) {
-    const roleBtns = document.querySelectorAll<HTMLElement>(
-      'div[role="button"][aria-haspopup="menu"]'
+    sortButton = await waitForElement(
+      'div[role="button"][aria-haspopup="menu"]',
+      2000,
+      isSortButton
     )
-
-    for (const btn of roleBtns) {
-      const span = btn.querySelector('span')
-      if (!span) continue
-
-      const spanText = span.textContent?.trim().toLowerCase() || ''
-
-      if (sortLabels.includes(spanText)) {
-        sortButton = btn
-        break
-      }
-    }
   }
 
   if (!sortButton) {
-    console.log('[X Reply Sorter] Sort button not found on this page')
+    console.log('[X Reply Sorter] Sort button not found')
     return false
   }
 
-  // Check if already sorted by our target
+  // Already sorted correctly
   const currentSpan = sortButton.querySelector('span')
-  const currentText = currentSpan?.textContent?.trim() || ''
-  if (currentText === targetLabel) {
+  if (currentSpan?.textContent?.trim() === targetLabel) {
     console.log(`[X Reply Sorter] Already sorted by ${targetLabel}`)
     return true
   }
 
-  // Click the sort button to open the dropdown menu
+  // Open the dropdown
   sortButton.click()
 
-  // Wait for the dropdown menu to appear and find our target option
+  // Wait for the menu item
   const menuItem = await waitForElement(
-    `div[role="menuitem"]`,
+    'div[role="menuitem"]',
     1500,
     (el) => {
       const spans = el.querySelectorAll('span')
@@ -111,130 +103,97 @@ const clickSortOption = async (sortBy: string): Promise<boolean> => {
   return true
 }
 
-/**
- * Wait for an element matching the selector to appear in the DOM.
- * Optionally filter with a predicate function.
- */
 const waitForElement = (
   selector: string,
   timeout: number,
   predicate?: (el: HTMLElement) => boolean
 ): Promise<HTMLElement | null> => {
   return new Promise((resolve) => {
-    // Check if it already exists
-    const existing = findMatchingElement(selector, predicate)
-    if (existing) {
-      resolve(existing)
-      return
-    }
+    const match = findMatch(selector, predicate)
+    if (match) { resolve(match); return }
 
     const observer = new MutationObserver(() => {
-      const el = findMatchingElement(selector, predicate)
-      if (el) {
-        observer.disconnect()
-        resolve(el)
-      }
+      const el = findMatch(selector, predicate)
+      if (el) { observer.disconnect(); resolve(el) }
     })
 
     observer.observe(document.body, { childList: true, subtree: true })
-
-    setTimeout(() => {
-      observer.disconnect()
-      resolve(null)
-    }, timeout)
+    setTimeout(() => { observer.disconnect(); resolve(null) }, timeout)
   })
 }
 
-/**
- * Find an element matching selector and optional predicate.
- */
-const findMatchingElement = (
+const findMatch = (
   selector: string,
   predicate?: (el: HTMLElement) => boolean
 ): HTMLElement | null => {
-  const elements = document.querySelectorAll<HTMLElement>(selector)
-
-  for (const el of elements) {
-    if (!predicate || predicate(el)) {
-      return el
-    }
+  for (const el of document.querySelectorAll<HTMLElement>(selector)) {
+    if (!predicate || predicate(el)) return el
   }
-
   return null
 }
 
+const isTweetPage = (url: URL) => /\/status\/\d+/.test(url.pathname)
+
 /**
- * Main: attempt to sort replies on the current page.
+ * SPA navigation handler — uses DOM click (no reload).
  */
-const sortReplies = async () => {
+let lastUrl = window.location.href
+let isProcessing = false
+
+const onSpaNavigation = async () => {
   if (isProcessing) return
   isProcessing = true
 
   try {
+    const url = new URL(window.location.href)
+    if (!isTweetPage(url)) return
+
     const settings = await getSettings()
-
-    if (!settings.enabled) {
-      isProcessing = false
-      return
-    }
-
-    // Only run on individual tweet pages
-    if (!window.location.pathname.match(/\/status\/\d+/)) {
-      isProcessing = false
-      return
-    }
+    if (!settings.enabled || settings.sortBy === 'relevance') return
 
     await clickSortOption(settings.sortBy)
   } catch (err) {
     console.error('[X Reply Sorter]', err)
+  } finally {
+    isProcessing = false
   }
-
-  isProcessing = false
 }
-
-/**
- * Debounced sort — wait for page content to load.
- */
-let sortTimeout: ReturnType<typeof setTimeout> | null = null
-
-const debouncedSort = () => {
-  if (sortTimeout) clearTimeout(sortTimeout)
-  sortTimeout = setTimeout(sortReplies, 1500)
-}
-
-/**
- * Watch for URL changes (X is a SPA).
- */
-let lastUrl = window.location.href
 
 const urlObserver = new MutationObserver(() => {
   if (window.location.href !== lastUrl) {
     lastUrl = window.location.href
-    debouncedSort()
+    onSpaNavigation()
   }
 })
 
 /**
- * Listen for settings changes from the popup.
+ * Settings change from popup — use DOM click on current page.
  */
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === 'SETTINGS_UPDATED') {
-    sortReplies()
+    const url = new URL(window.location.href)
+    if (!isTweetPage(url)) return
+
+    getSettings().then((settings) => {
+      if (!settings.enabled) return
+      clickSortOption(settings.sortBy)
+    })
   }
 })
 
 /**
- * Initialize.
+ * Initialize: query param on first load, DOM observer for SPA nav.
  */
-const init = () => {
+const init = async () => {
+  // Try query param first (instant, no DOM needed)
+  const redirected = await applySortParam()
+  if (redirected) return
+
   // Watch for SPA navigation
   const titleEl = document.querySelector('head > title')
   if (titleEl) {
     urlObserver.observe(titleEl, { childList: true })
   }
-
-  // Initial sort on page load
-  debouncedSort()
 }
 
 if (document.readyState === 'loading') {

@@ -130,6 +130,7 @@ const Popup = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            <span className={styles.feedbackIcon}>&#9993;</span>
             Feedback
           </a>
         </div>

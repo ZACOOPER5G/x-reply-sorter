@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X Reply Sorter — Cut through the rage bait</title>
+  <meta name="description" content="Take back your replies. No more rage bait pushed by the algorithm — sort X/Twitter replies by Likes, Recent, or Relevant and see what people actually agree with first." />
+  <meta property="og:title" content="X Reply Sorter" />
+  <meta property="og:description" content="No more rage bait decided by the algorithm overlords. Sort X replies by Likes instantly." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://zacooper5g.github.io/x-reply-sorter/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="X Reply Sorter" />
+  <meta name="twitter:description" content="No more rage bait decided by the algorithm overlords. Sort X replies by Likes instantly." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z'/></svg>" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      color: #e7e9ea;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: #1d9bf0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      padding: 20px 0;
+      border-bottom: 1px solid #2f3336;
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 16px;
+      color: #e7e9ea;
+    }
+
+    .nav-brand svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      font-size: 14px;
+    }
+
+    .nav-links a { color: #71767b; }
+    .nav-links a:hover { color: #e7e9ea; text-decoration: none; }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 64px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 span {
+      color: #1d9bf0;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: #71767b;
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.5;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 9999px;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.9; text-decoration: none; }
+
+    .btn-primary {
+      background: #1d9bf0;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #e7e9ea;
+      border: 1px solid #2f3336;
+    }
+
+    .btn-secondary:hover { border-color: #71767b; }
+
+    /* Features */
+    .features {
+      padding: 64px 0;
+      border-top: 1px solid #2f3336;
+    }
+
+    .features h2 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #71767b;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+    }
+
+    .feature {
+      text-align: center;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: #1d9bf01a;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 24px;
+    }
+
+    .feature h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      font-size: 14px;
+      color: #71767b;
+      line-height: 1.5;
+    }
+
+    /* How it works */
+    .how-it-works {
+      padding: 64px 0;
+      border-top: 1px solid #2f3336;
+    }
+
+    .how-it-works h2 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #71767b;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: #1d9bf0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-text h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .step-text p {
+      font-size: 14px;
+      color: #71767b;
+    }
+
+    /* CTA */
+    .bottom-cta {
+      padding: 64px 0;
+      border-top: 1px solid #2f3336;
+      text-align: center;
+    }
+
+    .bottom-cta h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .bottom-cta p {
+      color: #71767b;
+      margin-bottom: 32px;
+      font-size: 16px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid #2f3336;
+    }
+
+    footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #71767b;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .footer-links a { color: #71767b; }
+    .footer-links a:hover { color: #e7e9ea; }
+
+    .heart { color: #f91880; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero { padding: 48px 0 40px; }
+      .hero h1 { font-size: 32px; }
+      .hero p { font-size: 17px; }
+      .feature-grid { grid-template-columns: 1fr; gap: 24px; }
+      .bottom-cta h2 { font-size: 24px; }
+      footer .container { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <div class="nav-brand">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" />
+        </svg>
+        X Reply Sorter
+      </div>
+      <ul class="nav-links">
+        <li><a href="https://github.com/zacooper5g/x-reply-sorter">GitHub</a></li>
+        <li><a href="https://ko-fi.com/zacooper">Ko-fi</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <h1>No more <span>rage bait</span> decided by the algorithm.</h1>
+      <p>Sort X/Twitter replies by Likes, Recent, or Relevant. See what people actually agree with first — not what the algorithm wants you to argue about.</p>
+      <div class="cta-group">
+        <a class="btn btn-primary" href="#install">Add to Chrome — Free</a>
+        <a class="btn btn-secondary" href="https://github.com/zacooper5g/x-reply-sorter">View Source</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h2>Features</h2>
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="feature-icon">&#9889;</div>
+          <h3>Instant</h3>
+          <p>Sorts replies before the page even renders. No flickering, no waiting, no DOM hacks.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">&#128274;</div>
+          <h3>Private</h3>
+          <p>Zero data collection. No accounts, no tracking, no analytics. Just a query parameter.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">&#9881;</div>
+          <h3>Set and forget</h3>
+          <p>Pick your preferred sort once. Every tweet page you open uses it automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-it-works">
+    <div class="container">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-text">
+            <h3>Install the extension</h3>
+            <p>Add it to Chrome in one click. No sign-up required.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-text">
+            <h3>Pick your sort order</h3>
+            <p>Open the extension popup and choose Likes, Recent, or Relevant.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-text">
+            <h3>Browse X as usual</h3>
+            <p>Every tweet you open will automatically sort replies your way. Uses X's native sort — nothing injected.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-cta">
+    <div class="container">
+      <h2>Take back your timeline.</h2>
+      <p>Free, open-source, and built by someone who was tired of the algorithm too.</p>
+      <div class="cta-group">
+        <a class="btn btn-primary" href="#install">Add to Chrome</a>
+        <a class="btn btn-secondary" href="https://ko-fi.com/zacooper"><span class="heart">&#9829;</span> Buy me a coffee</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <span>Built by <a href="https://github.com/zacooper5g">Zac Cooper</a></span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/zacooper5g/x-reply-sorter/issues">Feedback</a></li>
+        <li><a href="https://github.com/sponsors/zacooper5g">Sponsor</a></li>
+        <li><a href="https://ko-fi.com/zacooper">Ko-fi</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
