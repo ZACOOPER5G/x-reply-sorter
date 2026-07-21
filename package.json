@@ -2,7 +2,7 @@
   "name": "x-reply-sorter",
   "displayName": "X Reply Sorter",
   "version": "0.1.0",
-  "description": "Take back your replies. No more rage bait pushed by the algorithm — sort X/Twitter replies by Likes, Recent, or Relevant and see what people actually agree with first.",
+  "description": "No more rage bait from the algorithm. Automatically sort X/Twitter replies by Likes, Recent, or Relevant.",
   "author": "Zac Cooper",
   "homepage": "https://github.com/zacooper5g/x-reply-sorter",
   "scripts": {

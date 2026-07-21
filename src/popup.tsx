@@ -133,8 +133,8 @@ const Popup = () => {
             <span className={styles.feedbackIcon}>&#9993;</span>
             Feedback
           </a>
+          <span className={styles.version}>v0.1.0</span>
         </div>
-        <span className={styles.version}>v0.1.0</span>
       </div>
     </div>
   )
