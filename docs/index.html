@@ -12,6 +12,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="X Reply Sorter" />
   <meta name="twitter:description" content="No more rage bait decided by the algorithm overlords. Sort X replies by Likes instantly." />
+  <meta name="google-adsense-account" content="ca-pub-3762242372781719" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z'/></svg>" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -274,6 +275,69 @@
 
     .heart { color: #f91880; }
 
+    /* FAQ */
+    .faq {
+      padding: 64px 0;
+      border-top: 1px solid #2f3336;
+    }
+
+    .faq h2 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #71767b;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: #2f3336;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    details {
+      background: #16181c;
+      padding: 0;
+    }
+
+    summary {
+      padding: 16px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::after {
+      content: '+';
+      float: right;
+      color: #71767b;
+      font-size: 18px;
+    }
+
+    details[open] summary::after { content: '-'; }
+
+    details p {
+      padding: 0 20px 16px;
+      font-size: 14px;
+      color: #71767b;
+      line-height: 1.6;
+    }
+
+    details code {
+      background: #202327;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #e7e9ea;
+    }
+
     /* Responsive */
     @media (max-width: 640px) {
       .hero { padding: 48px 0 40px; }
@@ -360,6 +424,34 @@
             <p>Every tweet you open will automatically sort replies your way. Uses X's native sort — nothing injected.</p>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq">
+    <div class="container">
+      <h2>FAQ</h2>
+      <div class="faq-list">
+        <details>
+          <summary>Does this modify the page or inject anything?</summary>
+          <p>No. On direct page loads, the extension simply adds a <code>?sort_replies=likes</code> query parameter to the URL — a feature X already supports natively. On in-app navigation, it clicks X's own sort dropdown. Nothing is injected into the page.</p>
+        </details>
+        <details>
+          <summary>Does it collect any data?</summary>
+          <p>Zero. No accounts, no tracking, no analytics, no network requests. Your sort preference is stored locally in your browser and never leaves your device.</p>
+        </details>
+        <details>
+          <summary>Will this break if X updates their site?</summary>
+          <p>The primary method uses X's native query parameter, which is part of their URL API — unlikely to break. The fallback DOM method could need updates, but the extension will gracefully do nothing if it can't find the sort controls.</p>
+        </details>
+        <details>
+          <summary>Does it work on mobile?</summary>
+          <p>Chrome extensions don't run on mobile browsers. This works on desktop Chrome (and Chromium-based browsers like Edge, Brave, Arc, etc.).</p>
+        </details>
+        <details>
+          <summary>Is it open source?</summary>
+          <p>Yes. The full source code is on <a href="https://github.com/zacooper5g/x-reply-sorter">GitHub</a>. Contributions and issues are welcome.</p>
+        </details>
       </div>
     </div>
   </section>
