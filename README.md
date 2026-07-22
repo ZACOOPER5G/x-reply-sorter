@@ -40,6 +40,10 @@ Built with [Plasmo](https://www.plasmo.com/), React, and TypeScript.
 - [Sponsor on GitHub](https://github.com/sponsors/zacooper5g)
 - [Report an issue](https://github.com/zacooper5g/x-reply-sorter/issues)
 
+## Known Limitations
+
+- On direct page loads, the `?sort_replies` param adds an extra history entry — pressing back once clears the param, requiring a second press to navigate away. Fix planned for a future release.
+
 ## Privacy
 
 Zero data collection. Your sort preference is stored locally in your browser and never leaves your device. [Full privacy policy](https://zacooper5g.github.io/x-reply-sorter/privacy.html).
