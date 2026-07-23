@@ -1,8 +1,8 @@
 name: Publish to Chrome Web Store
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main]
 
 jobs:
   publish:
@@ -13,17 +13,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Sync version from release tag
-        run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          echo "Updating package.json version to $VERSION"
-          node -e "
-            const fs = require('fs');
-            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-            pkg.version = '$VERSION';
-            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
-          "
 
       - run: npm ci
 
