@@ -4,7 +4,27 @@
   "version": "0.1.0",
   "description": "No more rage bait from the algorithm. Automatically sort X/Twitter replies by Likes, Recent, or Relevant.",
   "author": "Zac Cooper",
-  "homepage": "https://github.com/zacooper5g/x-reply-sorter",
+  "license": "MIT",
+  "homepage": "https://zacooper5g.github.io/x-reply-sorter/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zacooper5g/x-reply-sorter"
+  },
+  "bugs": {
+    "url": "https://github.com/zacooper5g/x-reply-sorter/issues"
+  },
+  "keywords": [
+    "chrome-extension",
+    "twitter",
+    "x",
+    "sort-replies",
+    "tweet-replies",
+    "browser-extension",
+    "manifest-v3",
+    "reply-sorter",
+    "twitter-extension",
+    "sort-by-likes"
+  ],
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zacooper5g.github.io/x-reply-sorter/sitemap.xml

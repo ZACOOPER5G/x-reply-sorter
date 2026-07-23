@@ -13,7 +13,69 @@
   <meta name="twitter:title" content="X Reply Sorter" />
   <meta name="twitter:description" content="No more rage bait decided by the algorithm overlords. Sort X replies by Likes instantly." />
   <meta name="google-adsense-account" content="ca-pub-3762242372781719" />
+  <link rel="canonical" href="https://zacooper5g.github.io/x-reply-sorter/" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z'/></svg>" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "X Reply Sorter",
+    "description": "Chrome extension to sort X (Twitter) replies by likes, newest, or most relevant. No more rage bait from the algorithm.",
+    "applicationCategory": "BrowserExtension",
+    "operatingSystem": "Chrome",
+    "url": "https://zacooper5g.github.io/x-reply-sorter/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Zac Cooper",
+      "url": "https://github.com/zacooper5g"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I sort Twitter/X replies by likes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Install the X Reply Sorter Chrome extension. It automatically sorts replies on any tweet by likes, newest, or most relevant using X's native sort controls."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does X Reply Sorter collect any data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Zero data collection. No accounts, no tracking, no analytics, no network requests. Your sort preference is stored locally in your browser and never leaves your device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does X Reply Sorter modify the page or inject anything?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "On direct page loads, the extension adds a ?sort_replies query parameter to the URL — a feature X already supports natively. On in-app navigation, it clicks X's own sort dropdown. Nothing is injected into the page."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does X Reply Sorter work on mobile?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Chrome extensions don't run on mobile browsers. X Reply Sorter works on desktop Chrome and Chromium-based browsers like Edge, Brave, and Arc."
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -451,6 +513,18 @@
         <details>
           <summary>Is it open source?</summary>
           <p>Yes. The full source code is on <a href="https://github.com/zacooper5g/x-reply-sorter">GitHub</a>. Contributions and issues are welcome.</p>
+        </details>
+        <details>
+          <summary>How do I sort X replies by most liked?</summary>
+          <p>Install X Reply Sorter from the Chrome Web Store, select "Likes" in the popup, and every tweet you open will automatically sort replies by most liked. No manual sorting needed.</p>
+        </details>
+        <details>
+          <summary>Can I see the best replies on Twitter?</summary>
+          <p>Yes — X Reply Sorter lets you sort replies by likes so the most-agreed-with responses appear first, instead of whatever the algorithm promotes.</p>
+        </details>
+        <details>
+          <summary>Does it work on Edge, Brave, or Arc?</summary>
+          <p>Yes. X Reply Sorter works on any Chromium-based browser — Chrome, Edge, Brave, Arc, Opera, and Vivaldi.</p>
         </details>
       </div>
     </div>
