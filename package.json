@@ -1,7 +1,7 @@
 {
   "name": "x-reply-sorter",
   "displayName": "X Reply Sorter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "No more rage bait from the algorithm. Automatically sort X/Twitter replies by Likes, Recent, or Relevant.",
   "author": "Zac Cooper",
   "license": "MIT",
